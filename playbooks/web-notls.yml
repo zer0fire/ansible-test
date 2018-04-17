@@ -1,0 +1,27 @@
+#!/usr/bin/env ansible-playbook
+
+- name: Configure webserver with nginx
+  hosts: webservers
+  sudo: True
+  tasks:
+#    - name: ready rpm for yum
+#      shell: rpm -ivh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
+#      when: systemctl status nginx == "Unit nginx.service could not be found."
+
+   # - name: install nginx
+   #   yum: name=nginx update_cache=yes
+
+    - name: copy nginx config file
+      copy: src=files/nginx.conf dest=/etc/nginx/conf.d/default.conf
+
+   # - name: enable configuration
+   #   file: >
+   #     dest=/etc/nginx/site-enabled/defalut
+   #     src=/etc/nginx/site-available/default
+   #     state=link
+ 
+    - name: copy index.html
+      template: src=templates/index.html.j2 dest=/usr/share/nginx/html/index.html mode=0644
+
+    - name: restart nginx
+      service: name=nginx state=restarted
